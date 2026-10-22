@@ -1,4 +1,5 @@
-import { Car, Bus, Plane, MapPin, CheckCircle2, Luggage } from 'lucide-react';
+import { Car, Bus, Plane, MapPin, CheckCircle2, Luggage, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const personas = [
   {
@@ -107,6 +108,20 @@ export default function ArrivalGuide() {
             </span>
           </div>
           <MapPin className="h-5 w-5 text-secondary-300 flex-shrink-0 hidden sm:block" />
+        </div>
+
+        {/* CTA to Journey Page */}
+        <div className="mt-6 text-center">
+          <Link
+            to="/panduan-perjalanan-ke-perhentian"
+            className="inline-flex items-center gap-2 rounded-xl bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg transition-all hover:bg-accent-600 hover:shadow-xl active:scale-95"
+          >
+            Lihat Panduan Lengkap Door-to-Door
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <p className="mt-2 text-xs text-primary-400">
+            Garis masa langkah demi langkah dari pintu rumah ke pintu resort
+          </p>
         </div>
       </div>
     </section>

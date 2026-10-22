@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Anchor, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Anchor, Menu, X, Navigation } from 'lucide-react';
 
 const navLinks = [
   { label: 'Tempah', href: '#booking' },
@@ -41,6 +42,13 @@ export default function Navbar() {
           </a>
 
           <div className="hidden lg:flex items-center gap-1">
+            <Link
+              to="/panduan-perjalanan-ke-perhentian"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-secondary-300 transition-colors hover:bg-primary-600 hover:text-white"
+            >
+              <Navigation className="h-4 w-4" />
+              Panduan Perjalanan
+            </Link>
             {navLinks.map((link) => (
               <a
                 key={link.href + link.label}
@@ -70,6 +78,14 @@ export default function Navbar() {
         {mobileOpen && (
           <div className="lg:hidden pb-4 animate-slide-down">
             <div className="flex flex-col gap-1">
+              <Link
+                to="/panduan-perjalanan-ke-perhentian"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-secondary-300 transition-colors hover:bg-primary-600 hover:text-white"
+              >
+                <Navigation className="h-4 w-4" />
+                Panduan Perjalanan Door-to-Door
+              </Link>
               {navLinks.map((link) => (
                 <a
                   key={link.href + link.label}
