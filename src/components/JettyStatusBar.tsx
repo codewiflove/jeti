@@ -13,7 +13,7 @@ export default function JettyStatusBar() {
   const statusConfig = {
     open: {
       label: 'Jeti Beroperasi',
-      color: 'bg-success-500',
+      color: 'bg-[#15803D]',
       textColor: 'text-white',
       icon: <Sun className="h-4 w-4" />,
     },
@@ -25,7 +25,7 @@ export default function JettyStatusBar() {
     },
     closed: {
       label: 'Jeti Ditutup',
-      color: 'bg-error-500',
+      color: 'bg-[#B91C1C]',
       textColor: 'text-white',
       icon: <AlertTriangle className="h-4 w-4" />,
     },

@@ -15,9 +15,9 @@ export default function Navbar() {
   const { t, lang, setLang } = useLang();
   const [open, setOpen] = useState(false);
   const langBtn = (
-    <button type="button" onClick={() => setLang(lang === 'ms' ? 'en' : 'ms')} aria-label={t('nav.lang')}
+    <button type="button" onClick={() => setLang(lang === 'ms' ? 'en' : 'ms')} title={t('nav.lang')}
       className="flex items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-bold text-white ring-1 ring-white/25 hover:bg-white/10">
-      <Languages className="h-4 w-4" aria-hidden />{lang === 'ms' ? 'EN' : 'BM'}
+      <Languages className="h-4 w-4" aria-hidden />{lang === 'ms' ? 'EN' : 'BM'}<span className="sr-only"> — {t('nav.lang')}</span>
     </button>
   );
   return (

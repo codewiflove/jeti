@@ -53,7 +53,7 @@ export default function BudgetCalculator() {
     <section id="calculator" className="py-16 sm:py-20 px-4">
       <div className="mx-auto max-w-4xl">
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-secondary-50 px-4 py-1.5 text-xs font-bold text-secondary-600 ring-1 ring-secondary-200">
+          <div className="inline-flex items-center gap-2 rounded-full bg-secondary-50 px-4 py-1.5 text-xs font-bold text-secondary-700 ring-1 ring-secondary-200">
             <Calculator className="h-3.5 w-3.5" />
             Kalkulator Bajet Penuh
           </div>
@@ -141,10 +141,11 @@ export default function BudgetCalculator() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-primary-700">
-                Bilangan Hari Parking: <span className="text-secondary-600">{parkingDays} hari</span>
+              <label htmlFor="calc-parking-days" className="mb-2 block text-sm font-semibold text-primary-700">
+                Bilangan Hari Parking: <span className="text-secondary-700">{parkingDays} hari</span>
               </label>
               <input
+                id="calc-parking-days"
                 type="range"
                 min={1}
                 max={14}
