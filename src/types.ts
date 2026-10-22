@@ -41,17 +41,21 @@ export interface GalleryImage {
 }
 
 export type BookingTab = 'boat' | 'transfer' | 'parking';
+export type Nationality = 'local' | 'foreign';
 
 export interface BookingDetails {
   island: 'Besar' | 'Kecil';
   resortName: string;
   landing: 'wet' | 'dry' | null;
   date: string;
+  returnDate: string;
   adults: number;
   children: number;
   tripType: 'oneway' | 'return';
+  nationality: Nationality;
   parkingType: 'none' | 'open' | 'covered';
-  parkingNights: number;
+  parkingDays: number;
   snorkeling: boolean;
   transferFrom: string;
+  flightNumber: string;
 }

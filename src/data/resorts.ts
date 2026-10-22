@@ -32,9 +32,12 @@ export const pricing = {
   boatChildReturn: 40,
   parkingOpen: 10,
   parkingCovered: 15,
-  conservationAdult: 30,
-  conservationChild: 15,
-  mdbFee: 5,
+  // Fi Akses Jeti (MDB) — per orang
+  mdbFeeLocal: 5,
+  mdbFeeForeign: 20,
+  // Fi Taman Laut — per orang
+  marineParkFeeLocal: 5,
+  marineParkFeeForeign: 30,
   snorkelingPackage: 80,
   vanKBR: 120,
   vanTGG: 90,

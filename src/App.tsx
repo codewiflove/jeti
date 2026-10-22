@@ -5,6 +5,7 @@ import Hero from '@/components/Hero';
 import BookingWidget from '@/components/BookingWidget';
 import BudgetCalculator from '@/components/BudgetCalculator';
 import GuideLinks from '@/components/GuideLinks';
+import ArrivalGuide from '@/components/ArrivalGuide';
 import FacilitiesDirectory from '@/components/FacilitiesDirectory';
 import { Testimonials, Gallery } from '@/components/TestimonialsGallery';
 import Footer from '@/components/Footer';
@@ -21,6 +22,7 @@ export default function App() {
       <Hero />
       <BookingWidget onBook={setTicketDetails} />
       <BudgetCalculator />
+      <ArrivalGuide />
       <GuideLinks />
       <FacilitiesDirectory />
       <Testimonials />

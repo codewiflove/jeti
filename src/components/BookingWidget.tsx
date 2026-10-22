@@ -4,6 +4,7 @@ import {
   Plane,
   SquareParking,
   Calendar,
+  CalendarDays,
   Minus,
   Plus,
   ArrowRightLeft,
@@ -13,12 +14,26 @@ import {
   Search,
   Fish,
   CheckCircle2,
+  CreditCard,
+  AlertTriangle,
+  Bus,
+  BaggageClaim,
+  Clock,
 } from 'lucide-react';
 import { resorts, pricing, boatSchedule } from '@/data/resorts';
-import type { BookingTab, BookingDetails } from '@/types';
+import type { BookingTab, BookingDetails, Nationality } from '@/types';
 
 interface Props {
   onBook: (details: BookingDetails) => void;
+}
+
+function calcCalendarDays(departDate: string, returnDate: string): number {
+  if (!departDate || !returnDate) return 1;
+  const d1 = new Date(departDate);
+  const d2 = new Date(returnDate);
+  if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return 1;
+  const diff = Math.round((d2.getTime() - d1.getTime()) / 86400000);
+  return Math.max(1, diff + 1);
 }
 
 export default function BookingWidget({ onBook }: Props) {
@@ -28,14 +43,26 @@ export default function BookingWidget({ onBook }: Props) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [island, setIsland] = useState<'Besar' | 'Kecil'>('Besar');
   const [date, setDate] = useState('');
+  const [returnDate, setReturnDate] = useState('');
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
   const [tripType, setTripType] = useState<'oneway' | 'return'>('oneway');
+  const [nationality, setNationality] = useState<Nationality>('local');
   const [parkingType, setParkingType] = useState<'none' | 'open' | 'covered'>('none');
-  const [parkingNights, setParkingNights] = useState(2);
   const [snorkeling, setSnorkeling] = useState(false);
   const [transferFrom, setTransferFrom] = useState('KBR');
+  const [flightNumber, setFlightNumber] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+
+  const parkingDays = useMemo(() => {
+    if (tripType === 'return' && date && returnDate) {
+      return calcCalendarDays(date, returnDate);
+    }
+    return 1;
+  }, [tripType, date, returnDate]);
+
+  const mdbFee = nationality === 'local' ? pricing.mdbFeeLocal : pricing.mdbFeeForeign;
+  const marineParkFee = nationality === 'local' ? pricing.marineParkFeeLocal : pricing.marineParkFeeForeign;
 
   const suggestions = useMemo(() => {
     if (!resortQuery.trim()) return resorts;
@@ -57,17 +84,17 @@ export default function BookingWidget({ onBook }: Props) {
   const parkingCost = useMemo(() => {
     if (parkingType === 'none') return 0;
     const rate = parkingType === 'covered' ? pricing.parkingCovered : pricing.parkingOpen;
-    return rate * parkingNights;
-  }, [parkingType, parkingNights]);
+    return rate * parkingDays;
+  }, [parkingType, parkingDays]);
 
-  const conservationCost = adults * pricing.conservationAdult + children * pricing.conservationChild;
-  const mdbCost = pricing.mdbFee * (adults + children);
+  const mdbCost = mdbFee * (adults + children);
+  const marineParkCost = marineParkFee * (adults + children);
   const snorkelingCost = snorkeling ? pricing.snorkelingPackage * adults : 0;
   const transferCost = activeTab === 'transfer'
     ? transferFrom === 'KBR' ? pricing.vanKBR : transferFrom === 'TGG' ? pricing.vanTGG : pricing.vanECRL
     : 0;
 
-  const total = boatCost + parkingCost + conservationCost + mdbCost + snorkelingCost + transferCost;
+  const total = boatCost + parkingCost + mdbCost + marineParkCost + snorkelingCost + transferCost;
 
   const handleSelectResort = (resort: typeof resorts[number]) => {
     setSelectedResort(resort);
@@ -82,13 +109,16 @@ export default function BookingWidget({ onBook }: Props) {
       resortName: selectedResort?.name || resortQuery || 'Belum dipilih',
       landing: selectedResort?.landing || null,
       date: date || 'Belum dipilih',
+      returnDate: returnDate || 'Belum dipilih',
       adults,
       children,
       tripType,
+      nationality,
       parkingType,
-      parkingNights,
+      parkingDays,
       snorkeling,
       transferFrom,
+      flightNumber,
     });
   };
 
@@ -122,9 +152,41 @@ export default function BookingWidget({ onBook }: Props) {
           </div>
 
           <div className="p-5 sm:p-7">
+            {/* Cashless Alert (all tabs) */}
+            <div className="mb-5 flex items-start gap-3 rounded-xl bg-warning-500/10 p-3.5 ring-1 ring-warning-500/30">
+              <CreditCard className="h-5 w-5 flex-shrink-0 text-warning-600 mt-0.5" />
+              <div>
+                <span className="block text-sm font-bold text-warning-700">Sediakan Kad Bank &amp; MyKad</span>
+                <span className="block text-xs text-warning-600/90 mt-0.5">
+                  Kaunter Taman Laut di Jeti Kuala Besut ialah 100% Cashless — wajib bayar guna Kad Debit/Kredit. Tunai TIDAK diterima.
+                </span>
+              </div>
+            </div>
+
             {/* Boat Tab */}
             {activeTab === 'boat' && (
               <div className="space-y-5 animate-fade-in">
+                {/* Nationality Selector */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-primary-700">Kewarganegaraan</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setNationality('local')}
+                      className={`rounded-xl border-2 p-3.5 text-left transition-all ${nationality === 'local' ? 'border-secondary-500 bg-secondary-50' : 'border-sand-200 hover:border-secondary-300'}`}
+                    >
+                      <span className="block text-sm font-bold text-primary-700">Warganegara (MyKad)</span>
+                      <span className="mt-0.5 block text-xs text-primary-400">Fi Jeti + Taman Laut: RM10/orang</span>
+                    </button>
+                    <button
+                      onClick={() => setNationality('foreign')}
+                      className={`rounded-xl border-2 p-3.5 text-left transition-all ${nationality === 'foreign' ? 'border-secondary-500 bg-secondary-50' : 'border-sand-200 hover:border-secondary-300'}`}
+                    >
+                      <span className="block text-sm font-bold text-primary-700">Bukan Warganegara</span>
+                      <span className="mt-0.5 block text-xs text-primary-400">Fi Jeti + Taman Laut: RM50/orang</span>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Island Selector */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-primary-700">Pilih Pulau</label>
@@ -260,10 +322,10 @@ export default function BookingWidget({ onBook }: Props) {
                   </div>
                 </div>
 
-                {/* Date & Time */}
+                {/* Dates & Time */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-primary-700">Tarikh Perjalanan</label>
+                    <label className="mb-2 block text-sm font-semibold text-primary-700">Tarikh Pergi</label>
                     <div className="relative">
                       <Calendar className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-primary-300" />
                       <input
@@ -274,6 +336,20 @@ export default function BookingWidget({ onBook }: Props) {
                       />
                     </div>
                   </div>
+                  {tripType === 'return' && (
+                    <div>
+                      <label className="mb-2 block text-sm font-semibold text-primary-700">Tarikh Pulang</label>
+                      <div className="relative">
+                        <CalendarDays className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-primary-300" />
+                        <input
+                          type="date"
+                          value={returnDate}
+                          onChange={(e) => setReturnDate(e.target.value)}
+                          className="w-full rounded-xl border-2 border-sand-200 bg-white py-3 pl-10 pr-4 text-sm text-primary-700 focus:border-secondary-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <label className="mb-2 block text-sm font-semibold text-primary-700">Waktu Bot</label>
                     <select
@@ -341,24 +417,48 @@ export default function BookingWidget({ onBook }: Props) {
                   </div>
                 </div>
 
-                {/* Live Flight Tracking (dummy) */}
+                {/* Flight Number Input */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-primary-700">Nombor Penerbangan (Live Tracking)</label>
+                  <div className="relative">
+                    <Plane className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-secondary-500" />
+                    <input
+                      type="text"
+                      value={flightNumber}
+                      onChange={(e) => setFlightNumber(e.target.value)}
+                      placeholder="cth: AK6432, FY2104, MH1234..."
+                      className="w-full rounded-xl border-2 border-sand-200 bg-white py-3 pl-10 pr-4 text-sm text-primary-700 placeholder:text-primary-300 focus:border-secondary-500 focus:outline-none"
+                    />
+                  </div>
+                  {flightNumber && (
+                    <div className="mt-2 flex items-center gap-2 rounded-lg bg-secondary-50 p-3 text-xs text-secondary-700 animate-slide-up">
+                      <CheckCircle2 className="h-4 w-4 text-secondary-500" />
+                      <span>Penerbangan <strong>{flightNumber.toUpperCase()}</strong> dijejaki. Jika flight lewat, jadual bot &amp; van akan dilaraskan tanpa caj tersembunyi.</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Cut-off Time Warning */}
+                <div className="flex items-start gap-3 rounded-xl bg-accent-500/10 p-4 ring-1 ring-accent-500/30">
+                  <AlertTriangle className="h-5 w-5 flex-shrink-0 text-accent-600 mt-0.5" />
+                  <div>
+                    <span className="block text-sm font-bold text-accent-700">Panduan Masa Selamat (Cut-Off Time)</span>
+                    <span className="block text-xs text-accent-600/90 mt-1">
+                      Ketibaan flight paling lewat di KBR untuk bot hari yang sama: <strong>sebelum 3:00 petang</strong>.
+                      Jika flight mendarat waktu malam, kami cadangkan Hotel Transit Kuala Besut untuk menginap semalaman.
+                    </span>
+                  </div>
+                </div>
+
+                {/* Bus Arrival Info */}
                 <div className="rounded-xl bg-primary-50 p-4 ring-1 ring-primary-100">
                   <div className="flex items-center gap-2 text-sm font-bold text-primary-700">
-                    <Plane className="h-4 w-4 text-secondary-500" />
-                    Penjejakan Penerbangan Langsung
+                    <Bus className="h-4 w-4 text-secondary-500" />
+                    Datang Naik Bas Ekspres?
                   </div>
-                  <div className="mt-3 space-y-2">
-                    {[
-                      { flight: 'MH1234', route: 'KUL → KBR', status: 'Tiba 09:15', onTime: true },
-                      { flight: 'AK6789', route: 'PEN → TGG', status: 'Tiba 10:40', onTime: true },
-                    ].map((f) => (
-                      <div key={f.flight} className="flex items-center justify-between rounded-lg bg-white px-3 py-2 text-xs">
-                        <span className="font-semibold text-primary-700">{f.flight}</span>
-                        <span className="text-primary-500">{f.route}</span>
-                        <span className={`font-bold ${f.onTime ? 'text-success-600' : 'text-warning-600'}`}>{f.status}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <p className="mt-2 text-xs text-primary-500 leading-relaxed">
+                    Bas malam biasanya tiba di Terminal Bas Kuala Besut sekitar 5:00-6:30 pagi. Laluan jalan kaki 5 minit (800m) ke jeti. Tersedia: Luggage Drop awal, surau &amp; tandas untuk mandi/solat Subuh, serta port sarapan (Aroma Jiwa Cafe, Nasi Dagang, Mee Celup) sementara menunggu bot pertama jam 8:00 pagi.
+                  </p>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -387,8 +487,8 @@ export default function BookingWidget({ onBook }: Props) {
                   <div className="grid gap-3 sm:grid-cols-3">
                     {([
                       { id: 'none' as const, label: 'Tiada Parking', sub: 'Tanpa kereta', price: 0 },
-                      { id: 'open' as const, label: 'Parking Terbuka', sub: 'RM10 / malam', price: pricing.parkingOpen },
-                      { id: 'covered' as const, label: 'Berpagar & Berbumbung', sub: 'RM15 / malam', price: pricing.parkingCovered },
+                      { id: 'open' as const, label: 'Parking Terbuka', sub: `RM${pricing.parkingOpen} / hari`, price: pricing.parkingOpen },
+                      { id: 'covered' as const, label: 'Berpagar & Berbumbung', sub: `RM${pricing.parkingCovered} / hari`, price: pricing.parkingCovered },
                     ]).map((opt) => (
                       <button
                         key={opt.id}
@@ -408,14 +508,26 @@ export default function BookingWidget({ onBook }: Props) {
                 </div>
 
                 {parkingType !== 'none' && (
-                  <Counter
-                    label="Bilangan Malam Parking"
-                    sublabel="Kiraan hari kalendar"
-                    value={parkingNights}
-                    onChange={setParkingNights}
-                    min={1}
-                    max={14}
-                  />
+                  <div className="rounded-xl bg-sand-100 p-4">
+                    <div className="flex items-center gap-2 text-sm font-bold text-primary-700">
+                      <CalendarDays className="h-4 w-4 text-secondary-500" />
+                      Parking Dikira Per Hari Kalendar
+                    </div>
+                    <p className="mt-2 text-xs text-primary-500 leading-relaxed">
+                      Kadar parking dikira <strong>mengikut tarikh kalendar</strong>, bukan per 24 jam. Cth: masuk Jumaat 10 pagi, keluar Ahad 12 tengah hari = <strong>3 hari</strong> (Jumaat + Sabtu + Ahad).
+                    </p>
+                    {tripType === 'return' && date && returnDate ? (
+                      <div className="mt-3 flex items-center gap-2 rounded-lg bg-secondary-50 p-2.5 text-xs text-secondary-700">
+                        <CheckCircle2 className="h-4 w-4 text-secondary-500" />
+                        <span>Auto-kira: {parkingDays} hari kalendar (Tarikh Pergi → Tarikh Pulang)</span>
+                      </div>
+                    ) : (
+                      <div className="mt-3 flex items-center gap-2 rounded-lg bg-primary-50 p-2.5 text-xs text-primary-500">
+                        <Clock className="h-4 w-4 text-primary-400" />
+                        <span>Pilih Tarikh Pergi &amp; Tarikh Pulang di tab Bot Laju untuk auto-kira hari parking.</span>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 {/* Snorkeling */}
@@ -449,6 +561,9 @@ export default function BookingWidget({ onBook }: Props) {
               <div>
                 <span className="block text-xs text-sand-200">Jumlah Anggaran</span>
                 <span className="text-2xl font-extrabold">RM{total}</span>
+                {parkingType !== 'none' && parkingDays > 0 && (
+                  <span className="block text-[10px] text-sand-200/60">Termasuk {parkingDays} hari parking</span>
+                )}
               </div>
               <button
                 onClick={handleBook}
