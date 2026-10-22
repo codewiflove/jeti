@@ -12,6 +12,9 @@ import ArrivalGuide from '@/components/ArrivalGuide';
 import FacilitiesDirectory from '@/components/FacilitiesDirectory';
 import { Testimonials } from '@/components/TestimonialsGallery';
 import FAQ from '@/components/FAQ';
+import Walkthrough from '@/components/Walkthrough';
+import { TeamSection, OperatorsSection, FounderNote } from '@/components/People';
+import WhatsAppButton from '@/components/WhatsAppButton';
 import Footer from '@/components/Footer';
 import StickyCTA from '@/components/StickyCTA';
 import ETicketModal from '@/components/ETicketModal';
@@ -44,15 +47,20 @@ function Home() {
         <TrustStrip />
         <RoutePrices />
         <BookingWidget onBook={setTicketDetails} />
+        <Walkthrough />
+        <OperatorsSection />
         <BudgetCalculator />
         <ArrivalGuide />
         <GuideLinks />
         <FacilitiesDirectory />
+        <TeamSection />
         <Testimonials />
+        <FounderNote />
         <Suspense fallback={<div className="h-64" />}><Gallery /></Suspense>
         <FAQ />
       </Shell>
       <StickyCTA />
+      <WhatsAppButton />
       <ETicketModal details={ticketDetails} onClose={() => setTicketDetails(null)} />
     </BookingProvider>
   );

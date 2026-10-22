@@ -26,6 +26,12 @@ export interface Testimonial {
   rating: number;
   text: string;
   date: string;
+  /** Optional real customer photo (with consent). */
+  photo?: string;
+  /** Optional country (falls back to origin). */
+  country?: string;
+  /** Optional staff member the customer mentioned. */
+  staffMention?: string;
 }
 
 export interface GuideLink {

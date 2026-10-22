@@ -4,6 +4,7 @@ import { pricing, boatSchedule } from '@/data/resorts';
 import type { BookingDetails } from '@/types';
 import { useLang, type DictKey } from '@/lib/i18n';
 import { useBooking, type TransferFrom } from '@/lib/booking';
+import { ProofRow } from '@/components/TestimonialsGallery';
 
 interface Props { onBook: (details: BookingDetails) => void }
 
@@ -219,6 +220,7 @@ export default function BookingWidget({ onBook }: Props) {
                 <span className="font-display text-3xl font-extrabold text-cta-300">RM{b.total}</span>
               </div>
             </div>
+            <ProofRow />
           </aside>
         </div>
       </div>

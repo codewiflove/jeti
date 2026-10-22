@@ -2,8 +2,9 @@ import { Ship, Calendar, Users, Search, ArrowRight } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 import { useBooking, scrollToBooking } from '@/lib/booking';
 import { pricing } from '@/data/resorts';
+import { images } from '@/data/images';
+import Picture from '@/components/Picture';
 
-export const HERO_IMG = 'https://images.pexels.com/photos/15923579/pexels-photo-15923579.jpeg?auto=compress&cs=tinysrgb&w=1280&fm=webp';
 
 export default function Hero() {
   const { t } = useLang();
@@ -12,8 +13,7 @@ export default function Hero() {
 
   return (
     <section className="relative isolate overflow-hidden bg-navy" aria-labelledby="hero-title">
-      <img src={HERO_IMG} alt="" fetchPriority="high" decoding="async" width={1280} height={853}
-        className="absolute inset-0 -z-10 h-full w-full object-cover" />
+      <div className="absolute inset-0 -z-10"><Picture image={images.hero} priority alt="" sizes="100vw" className="h-full w-full object-cover" /></div>
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-navy/80 via-navy/70 to-navy/95" />
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-8 sm:pb-16 sm:pt-16 lg:grid lg:grid-cols-12 lg:items-center lg:gap-10 lg:py-24">
         <div className="lg:col-span-6">

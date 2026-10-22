@@ -39,11 +39,12 @@ export const guides: GuideLink[] = [
   },
 ];
 
+// INTERIM: Pexels stock photos self-hosted in /public/images (see CREDITS.md). Swap for real Kuala Besut / Perhentian photos.
 export const galleryImages: GalleryImage[] = [
-  { url: 'https://images.pexels.com/photos/38207224/pexels-photo-38207224.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', alt: 'Bot panjang di pantai Pulau Perhentian dengan bukit hijau' },
-  { url: 'https://images.pexels.com/photos/15923579/pexels-photo-15923579.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', alt: 'Pandangan udara bot laju di air turquoise' },
-  { url: 'https://images.pexels.com/photos/2404370/pexels-photo-2404370.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', alt: 'Snorkeling di kalangan hidupan marin tropika' },
-  { url: 'https://images.pexels.com/photos/7887675/pexels-photo-7887675.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', alt: 'Pemandangan laut biru jernih dengan bot di Pulau Perhentian' },
-  { url: 'https://images.pexels.com/photos/5444614/pexels-photo-5444614.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', alt: 'Bot berlabuh berhampiran pantai tropika' },
-  { url: 'https://images.pexels.com/photos/31508778/pexels-photo-31508778.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', alt: 'Kampung nelayan di persisiran turquoise' },
+  { url: '/images/longboat-960.webp', alt: 'Bot panjang di pantai Pulau Perhentian dengan bukit hijau' },
+  { url: '/images/hero-960.webp', alt: 'Pandangan udara bot laju di air turquoise' },
+  { url: '/images/snorkel-960.webp', alt: 'Snorkeling di kalangan hidupan marin tropika' },
+  { url: '/images/clearsea-960.webp', alt: 'Pemandangan laut biru jernih dengan bot di Pulau Perhentian' },
+  { url: '/images/moored-960.webp', alt: 'Bot berlabuh berhampiran pantai tropika' },
+  { url: '/images/village-960.webp', alt: 'Kampung nelayan di persisiran turquoise' },
 ];
